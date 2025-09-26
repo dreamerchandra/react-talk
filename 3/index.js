@@ -14,47 +14,101 @@ function longPrimeCalculation() {
   }
 }
 
+// Example 1: Basic performance measurement
+console.log("🚀 Starting performance measurement demo");
+performance.mark("prime-calc-start");
 longPrimeCalculation();
+performance.mark("prime-calc-end");
+performance.measure("Prime Calculation", "prime-calc-start", "prime-calc-end");
 
-// function marker(fn, { label, track, group, color = "primary-dark" }) {
-//   const logo = (...args) => `⚛️  ${args.join(" ")}`;
-//   const startMark = logo`${label} start`;
-//   const endMark = logo`${label} end`;
+// Custom performance marker function for better DevTools visualization
+function performanceMarker(
+  fn,
+  { label, track, group, color = "primary-dark" }
+) {
+  const logo = (...args) => `⚛️ ${args.join(" ")}`;
+  const startMark = `${logo(label)} start`;
+  const endMark = `${logo(label)} end`;
 
-//   performance.mark(startMark);
-//   fn();
-//   performance.mark(endMark);
+  performance.mark(startMark);
+  const startTime = performance.now();
 
-//   const measure = performance.measure(logo(label), {
-//     start: startMark,
-//     end: endMark,
-//     detail: {
-//       track: track || "main track",
-//       group: group || "Main script",
-//       color: color || "primary-dark",
-//     },
-//   });
+  fn();
 
-//   console.timeStamp(
-//     label,
-//     measure.startTime,
-//     measure.endTime,
-//     track,
-//     group,
-//     color
-//   );
-// }
+  performance.mark(endMark);
+  const endTime = performance.now();
 
-// measure(longPrimeCalculation, {
-//   label: "Prime Calculation",
-//   track: "main track",
-//   group: "Main script",
-// });
+  const measure = performance.measure(logo(label), {
+    start: startMark,
+    end: endMark,
+    detail: {
+      track: track || "main-track",
+      group: group || "Main Script",
+      color: color || "primary-dark",
+    },
+  });
 
-// setTimeout(() => {
-//   measure(longPrimeCalculation, {
-//     label: "Prime Calculation",
-//     track: "setTimeout track",
-//     group: "Main script",
-//   });
-// }, 1000);
+  // Create custom timeline entries
+  console.timeStamp(
+    `${label} - Duration: ${(endTime - startTime).toFixed(2)}ms`
+  );
+
+  console.log(`📊 ${label} completed in ${measure.duration.toFixed(2)}ms`, {
+    startTime: measure.startTime,
+    duration: measure.duration,
+    track,
+    group,
+  });
+
+  return measure;
+}
+
+// Example 2: Measure with custom tracking
+performanceMarker(longPrimeCalculation, {
+  label: "Prime Calculation (Main Thread)",
+  track: "main-thread",
+  group: "CPU Intensive Tasks",
+  color: "tertiary",
+});
+
+// Example 3: Measure async operation
+setTimeout(() => {
+  performanceMarker(longPrimeCalculation, {
+    label: "Prime Calculation (Delayed)",
+    track: "setTimeout-thread",
+    group: "Deferred Tasks",
+    color: "secondary",
+  });
+}, 1000);
+
+// Example 4: Real-world scenario - DOM operations
+function heavyDOMOperation() {
+  const container = document.createElement("div");
+  for (let i = 0; i < 1000; i++) {
+    const element = document.createElement("span");
+    element.textContent = `Item ${i}`;
+    container.appendChild(element);
+  }
+  document.body.appendChild(container);
+}
+
+setTimeout(() => {
+  performanceMarker(heavyDOMOperation, {
+    label: "Heavy DOM Operations",
+    track: "dom-thread",
+    group: "UI Operations",
+    color: "primary",
+  });
+}, 2000);
+
+// Show all performance entries
+setTimeout(() => {
+  console.log(
+    "📈 All Performance Measures:",
+    performance.getEntriesByType("measure")
+  );
+  console.log(
+    "🎯 All Performance Marks:",
+    performance.getEntriesByType("mark")
+  );
+}, 3000);
