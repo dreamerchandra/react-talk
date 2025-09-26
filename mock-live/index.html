@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<base href="/" />
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script>
+    window.initWorker = new Worker("./worker.js", {
+      name: "init-load",
+    });
+    window.intervalId = null;
+    const startApp = () => {
+      window.intervalId = setInterval(() => {
+        window.startJSDownload();
+      }, 0);
+    };
+
+    window.initWorker.addEventListener("message", function (e) {
+      const message = e.data;
+      if (message.type !== "connected") return;
+      startApp();
+      window.initWorker.postMessage({ type: "setData" });
+    });
+
+
+  </script>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <main id="root"></main>
+  <script id="main-chunck"></script>
+  <script>
+    window.startJSDownload = () => {
+      // Check config/webpack/common.js HtmlWebpackPlugin for explanation
+      const srcs = ['/runtime.2a4ab34230b8f0a99d43.js', '/vendor.6bbb44c40e85a914c2d6.js', '/6336.771860f5bef1c495ecfb.js', '/app.93dc9c865bbe476d7d97.js'];
+      const mainChunck = document.querySelector('#main-chunck')
+      srcs.forEach((src) => {
+        const script = document.createElement('script');
+        script.src = src;
+        mainChunck.appendChild(script);
+      })
+
+    }
+  </script>
+</body>
+
+</html>

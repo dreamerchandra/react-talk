@@ -12,52 +12,6 @@
     <p>This is a sample website.</p>
 </body>
 
-<script text="text/javascript">
-
-
-function measure (fn, {
-        label,
-        track,
-        group,
-        color = 'primary-dark'
-    }) {
-        const start = performance.now();
-        fn();
-        const end = performance.now();
-        console.timeStamp(label, start, end, track, group, color);
-    }
-
-
-    function isPrime (n) {
-        if (n < 2) return false;
-        for (let i = 2; i <= Math.sqrt(n); i++) {
-            if (n % i === 0) return false;
-        }
-        return true;
-    }
-
-
-    function longPrimeCalculation () {
-        for (let i = 0; i < 1e6; i++) {
-            isPrime(i);
-        }
-    }
-
-
-
-    measure(longPrimeCalculation, {
-        label: "Prime Calculation",
-        track: "main track",
-        group: "Main script",
-    });
-
-    setTimeout(() => {
-        measure(longPrimeCalculation, {
-            label: "Prime Calculation",
-            track: "setTimeout track",
-            group: "Main script",
-        });
-    }, 1000);
-</script>
+<script src="index.js"></script>
 
 </html>

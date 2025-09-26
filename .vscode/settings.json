@@ -1,7 +1,10 @@
 {
   "liveServer.settings.port": 5501,
   "editor.formatOnSave": true,
+  "editor.fontSize": 16,
+  "editor.lineHeight": 2,
   "[markdown]": {
+    "editor.fontSize": 22,
     "editor.formatOnSave": false
   }
 }
